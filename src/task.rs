@@ -1,6 +1,4 @@
 use std::fmt::Display;
-
-
 pub struct Task {
     title: String,
     description: String,
