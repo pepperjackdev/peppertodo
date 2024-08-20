@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+#[derive(PartialEq, Eq, Hash)]
 pub struct Task {
     title: String,
     description: String,
@@ -66,7 +67,7 @@ mod tests {
     #[test]
     fn test_get_title() {
         let task = Task::new("task title", "task description");
-        
+
         assert_eq!("task title", task.title);
     }
 
@@ -74,7 +75,7 @@ mod tests {
     fn test_set_title() {
         let mut task = Task::new("task title", "task description");
         task.set_title("new task title");
-        
+
         assert_eq!("new task title", task.title);
     }
 
@@ -89,7 +90,7 @@ mod tests {
     fn test_set_description() {
         let mut task = Task::new("task title", "task description");
         task.set_description("new task description");
-        
+
         assert_eq!("new task description", task.description);
     }
 
@@ -103,7 +104,7 @@ mod tests {
     #[test]
     fn test_mark_as_done() {
         let mut task = Task::new("task title", "task description");
-        
+
         task.mark_as_done();
 
         assert!(task.is_done);
@@ -112,7 +113,7 @@ mod tests {
     #[test]
     fn test_mark_as_undone() {
         let mut task = Task::new("task title", "task description");
-        
+
         task.is_done = true;
         task.mark_as_undone();
 
