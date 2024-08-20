@@ -3,15 +3,21 @@ use std::fmt::Display;
 #[derive(PartialEq, Eq, Hash)]
 pub struct Task {
     title: String,
-    description: String,
+    description: Option<String>,
     is_done: bool,
 }
 
 impl Task {
-    pub fn new(title: &str, description: &str) -> Task {
+    pub fn new(title: &str, description: Option<&str>) -> Task {
+
+        let description = match description {
+            Some(description) => Some(description.to_string()),
+            None => None
+        };
+
         Task {
             title: title.to_string(),
-            description: description.to_string(),
+            description: description,
             is_done: false,
         }
     }
@@ -24,12 +30,12 @@ impl Task {
         self.title = title.to_string();
     }
 
-    pub fn get_description(&self) -> &str {
+    pub fn get_description(&self) -> &Option<String> {
         &self.description
     }
 
-    pub fn set_description(&mut self, description: &str) {
-        self.description = description.to_string();
+    pub fn set_description(&mut self, description: &Option<String>) {
+        self.description = description.clone();
     }
 
     pub fn is_done(&self) -> bool {
@@ -47,7 +53,10 @@ impl Task {
 
 impl Display for Task {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}: {}", self.get_title(), self.get_description())
+        match &self.description {
+            Some(desc) => write!(f, "{}: {}", self.get_title(), desc),
+            None => write!(f, "{}", self.get_title())
+        }
     }
 }
 
@@ -60,20 +69,20 @@ mod tests {
         let task = Task::new("task title", "task description");
 
         assert_eq!("task title", task.title);
-        assert_eq!("task description", task.description);
+        assert_eq!("task description", task.description.unwrap());
         assert!(!task.is_done);
     }
 
     #[test]
     fn test_get_title() {
-        let task = Task::new("task title", "task description");
+        let task = Task::new("task title", Some("task description"));
 
         assert_eq!("task title", task.title);
     }
 
     #[test]
     fn test_set_title() {
-        let mut task = Task::new("task title", "task description");
+        let mut task = Task::new("task title", Some("task description"));
         task.set_title("new task title");
 
         assert_eq!("new task title", task.title);
@@ -81,9 +90,9 @@ mod tests {
 
     #[test]
     fn test_get_description() {
-        let task = Task::new("task title", "task description");
+        let task = Task::new("task title", Some("task description"));
 
-        assert_eq!("task description", task.description);
+        assert_eq!("task description", task.description.unwrap());
     }
 
     #[test]
