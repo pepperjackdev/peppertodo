@@ -1,4 +1,5 @@
 use std::fmt::Display;
+
 pub struct Task {
     title: String,
     description: String,
@@ -18,16 +19,16 @@ impl Task {
         &self.title
     }
 
-    pub fn get_title_mut(&mut self) -> &mut String {
-        &mut self.title
+    pub fn set_title(&mut self, title: &str) {
+        self.title = title.to_string();
     }
 
     pub fn get_description(&self) -> &str {
         &self.description
     }
 
-    pub fn get_description_mut(&mut self) -> &mut String {
-        &mut self.description
+    pub fn set_description(&mut self, description: &str) {
+        self.description = description.to_string();
     }
 
     pub fn is_done(&self) -> bool {
@@ -66,35 +67,37 @@ mod tests {
     fn test_get_title() {
         let task = Task::new("task title", "task description");
         
-        assert_eq!("task title", task.get_title());
+        assert_eq!("task title", task.title);
     }
 
     #[test]
-    fn test_get_title_mut() {
+    fn test_set_title() {
         let mut task = Task::new("task title", "task description");
+        task.set_title("new task title");
         
-        assert_eq!("task title", task.get_title_mut());
+        assert_eq!("new task title", task.title);
     }
 
     #[test]
     fn test_get_description() {
         let task = Task::new("task title", "task description");
 
-        assert_eq!("task description", task.get_description());
+        assert_eq!("task description", task.description);
     }
 
     #[test]
-    fn test_get_description_mut() {
+    fn test_set_description() {
         let mut task = Task::new("task title", "task description");
+        task.set_description("new task description");
         
-        assert_eq!("task description", task.get_description_mut());
+        assert_eq!("new task description", task.description);
     }
 
     #[test]
     fn test_is_done() {
         let task = Task::new("task title", "task description");
 
-        assert_eq!(false, task.is_done());
+        assert!(!task.is_done());
     }
 
     #[test]
@@ -118,7 +121,7 @@ mod tests {
 
     #[test]
     fn test_to_string() {
-        let task = Task::new("task title", "task description");
-        assert_eq!("task title: task description", task.to_string());
+        let task = Task::new("Task title", "task description");
+        assert_eq!("Task title: task description", task.to_string());
     }
 }
