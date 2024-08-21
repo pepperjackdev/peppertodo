@@ -36,7 +36,7 @@ mod tests {
     #[test]
     fn test_add_new_task() {
         let mut manager = TaskManager::new();
-        let task = Task::new("title", "description");
+        let task = Task::new("title", None);
 
         manager.add_new_task(task);
 
@@ -46,7 +46,7 @@ mod tests {
     #[test]
     fn test_get_undone_tasks() {
         let mut manager = TaskManager::new();
-        let task = Task::new("title", "description");
+        let task = Task::new("title", None);
         manager.add_new_task(task);
 
         assert_eq!(1, manager.get_undone_tasks().len());
@@ -55,7 +55,7 @@ mod tests {
     #[test]
     fn test_get_done_tasks() {
         let mut manager = TaskManager::new();
-        let mut task = Task::new("title", "description");
+        let mut task = Task::new("title", None);
 
         task.mark_as_done();
         manager.add_new_task(task);

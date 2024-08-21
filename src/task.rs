@@ -30,12 +30,17 @@ impl Task {
         self.title = title.to_string();
     }
 
-    pub fn get_description(&self) -> &Option<String> {
-        &self.description
+    pub fn get_description(&self) -> Option<&str> {
+        match &self.description {
+            Some(desc) => Some(&desc),
+            None => None,
+        }
     }
 
-    pub fn set_description(&mut self, description: &Option<String>) {
-        self.description = description.clone();
+    pub fn set_description(&mut self, description: Option<&str>) {
+        if let Some(desc) = description {
+            self.description = Some(desc.to_string());
+        }
     }
 
     pub fn is_done(&self) -> bool {
@@ -66,7 +71,7 @@ mod tests {
 
     #[test]
     fn test_new_task() {
-        let task = Task::new("task title", "task description");
+        let task = Task::new("task title", Some("task description"));
 
         assert_eq!("task title", task.title);
         assert_eq!("task description", task.description.unwrap());
@@ -75,14 +80,14 @@ mod tests {
 
     #[test]
     fn test_get_title() {
-        let task = Task::new("task title", Some("task description"));
+        let task = Task::new("task title", None);
 
         assert_eq!("task title", task.title);
     }
 
     #[test]
     fn test_set_title() {
-        let mut task = Task::new("task title", Some("task description"));
+        let mut task = Task::new("task title", None);
         task.set_title("new task title");
 
         assert_eq!("new task title", task.title);
@@ -97,22 +102,22 @@ mod tests {
 
     #[test]
     fn test_set_description() {
-        let mut task = Task::new("task title", "task description");
-        task.set_description("new task description");
+        let mut task = Task::new("task title", Some("task description"));
+        task.set_description(Some("new task description"));
 
-        assert_eq!("new task description", task.description);
+        assert_eq!("new task description", task.description.unwrap());
     }
 
     #[test]
     fn test_is_done() {
-        let task = Task::new("task title", "task description");
+        let task = Task::new("task title", None);
 
         assert!(!task.is_done());
     }
 
     #[test]
     fn test_mark_as_done() {
-        let mut task = Task::new("task title", "task description");
+        let mut task = Task::new("task title", None);
 
         task.mark_as_done();
 
@@ -121,7 +126,7 @@ mod tests {
 
     #[test]
     fn test_mark_as_undone() {
-        let mut task = Task::new("task title", "task description");
+        let mut task = Task::new("task title", None);
 
         task.is_done = true;
         task.mark_as_undone();
@@ -130,8 +135,16 @@ mod tests {
     }
 
     #[test]
-    fn test_to_string() {
-        let task = Task::new("Task title", "task description");
+    fn test_to_string_with_no_description() {
+        let task = Task::new("Task title", None);
+
+        assert_eq!("Task title", task.to_string());
+    }
+
+    #[test]
+    fn test_to_string_with_description() {
+        let task = Task::new("Task title", Some("task description"));
+
         assert_eq!("Task title: task description", task.to_string());
     }
 }

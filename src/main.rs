@@ -1,4 +1,4 @@
-use clap::{command, Arg, ArgAction};
+use clap::{command, Arg};
 use todo::{manager::TaskManager, task::Task};
 
 fn main() {
@@ -25,6 +25,6 @@ fn main() {
 
     if let Some(title) = matches.get_one::<String>("title") {
         let description = matches.get_one::<String>("description");
-        manager.add_new_task(Task::new(&title, &description));
+        manager.add_new_task(Task::new(&title, Some(description.unwrap())));
     }
 }
