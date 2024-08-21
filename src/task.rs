@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-#[derive(PartialEq, Eq, Hash)]
+#[derive(Eq, Hash)]
 pub struct Task {
     title: String,
     description: Option<String>,
@@ -30,16 +30,11 @@ impl Task {
     }
 
     pub fn get_description(&self) -> Option<&str> {
-        match &self.description {
-            Some(desc) => Some(&desc),
-            None => None,
-        }
+        self.description.as_deref()
     }
 
     pub fn set_description(&mut self, description: Option<&str>) {
-        if let Some(desc) = description {
-            self.description = Some(desc.to_string());
-        }
+        self.description = description.map(|desc| desc.to_string());
     }
 
     pub fn is_done(&self) -> bool {
@@ -61,6 +56,12 @@ impl Display for Task {
             Some(desc) => write!(f, "{}: {}", self.get_title(), desc),
             None => write!(f, "{}", self.get_title()),
         }
+    }
+}
+
+impl PartialEq for Task {
+    fn eq(&self, other: &Self) -> bool {
+        self.title == other.title
     }
 }
 

@@ -5,7 +5,7 @@ use task::Task;
 pub mod manager;
 pub mod task;
 
-pub fn run(mut manager: TaskManager, mut command: Command) {
+pub fn run(manager: &mut TaskManager, mut command: Command) {
     let matches = command.clone().get_matches();
 
     match matches.subcommand() {
@@ -20,8 +20,13 @@ pub fn run(mut manager: TaskManager, mut command: Command) {
                 None => manager.add_new_task(Task::new(title, None)),
             }
         }
+        Some(("mark", sub_matches)) => {
+            let title = sub_matches.get_one::<String>("title")
+                .expect("The argument `title` was not provided");
+            let as_undone = sub_matches.get_flag("as_done");
+        }
         _ => {
-            let _ = command.print_help();
+            command.print_help();
         }
     }
 }

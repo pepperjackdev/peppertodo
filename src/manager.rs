@@ -25,7 +25,7 @@ impl TaskManager {
     }
 
     pub fn clear_done_tasks(&mut self) {
-        todo!();
+        self.tasks.retain(|task| task.is_done());
     }
 }
 
