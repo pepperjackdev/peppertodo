@@ -26,7 +26,7 @@ pub fn run(manager: &mut TaskManager, mut command: Command) {
             let as_undone = sub_matches.get_flag("as_done");
         }
         _ => {
-            command.print_help();
+            let _ = command.print_help();
         }
     }
 }
