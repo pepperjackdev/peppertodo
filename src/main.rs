@@ -1,5 +1,5 @@
 use clap::{command, Arg, Command};
-use todo::{manager::TaskManager, run, task::Task};
+use todo::{manager::TaskManager, run};
 
 fn main() {
     let manager = TaskManager::new();
