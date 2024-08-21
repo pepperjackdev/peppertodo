@@ -9,10 +9,9 @@ pub struct Task {
 
 impl Task {
     pub fn new(title: &str, description: Option<&str>) -> Task {
-
         let description = match description {
             Some(description) => Some(description.to_string()),
-            None => None
+            None => None,
         };
 
         Task {
@@ -60,7 +59,7 @@ impl Display for Task {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &self.description {
             Some(desc) => write!(f, "{}: {}", self.get_title(), desc),
-            None => write!(f, "{}", self.get_title())
+            None => write!(f, "{}", self.get_title()),
         }
     }
 }

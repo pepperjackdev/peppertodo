@@ -1,30 +1,25 @@
-use clap::{command, Arg};
-use todo::{manager::TaskManager, task::Task};
+use clap::{command, Arg, Command};
+use todo::{manager::TaskManager, run, task::Task};
 
 fn main() {
-    let mut manager = TaskManager::new();
+    let manager = TaskManager::new();
+    let command = command!().subcommand(
+        Command::new("add")
+            .about("Adds a new task")
+            .arg(
+                Arg::new("title")
+                    .short('t')
+                    .long("title")
+                    .help("The title of the task")
+                    .required(true),
+            )
+            .arg(
+                Arg::new("description")
+                    .help("The description of the task (optional)")
+                    .short('d')
+                    .long("description"),
+            ),
+    );
 
-    let matches = command!()
-        .arg(
-            Arg::new("title")
-                .long("add")
-                .short('a')
-                .value_name("title")
-                .help("The title of the new task")
-                .required(true)
-        )
-        .arg(
-            Arg::new("description")
-                .long("description")
-                .short('d')
-                .value_name("description")
-                .help("The description of the new task")
-                .required(false)   
-        )
-        .get_matches();
-
-    if let Some(title) = matches.get_one::<String>("title") {
-        let description = matches.get_one::<String>("description");
-        manager.add_new_task(Task::new(&title, Some(description.unwrap())));
-    }
+    run(manager, command);
 }
