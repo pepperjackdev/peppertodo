@@ -1,8 +1,8 @@
-use clap::{command, Arg, ArgAction, Command};
+use clap::{command, Arg, Command};
 use todo::run;
 
 fn main() {
-    let command: Command = command!()
+    let mut command: Command = command!()
         .subcommand(
         Command::new("add")
             .about("Adds a new task")
@@ -19,25 +19,7 @@ fn main() {
                     .short('d')
                     .long("description"),
             ),
-        )
-        .subcommand(
-            Command::new("mark")
-                .about("Marks a task as done (or undone)")
-                .arg(
-                    Arg::new("as_done")
-                        .short('u')
-                        .long("undone")
-                        .help("Marks a done task as undone")
-                        .action(ArgAction::SetFalse)   
-                )
-                .arg(
-                    Arg::new("title")
-                        .short('t')
-                        .long("title")
-                        .help("The task title")
-                        .required(true) 
-                )
         );
 
-    run(command);
+    run(&mut command);
 }

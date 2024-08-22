@@ -1,10 +1,15 @@
-use std::fmt::Display;
 
-#[derive(Eq, Hash)]
+#[derive(Debug, PartialEq)]
+pub enum TaskStatus {
+    UNDONE,
+    UNDERWAY,
+    DONE,
+}
+
 pub struct Task {
     title: String,
     description: Option<String>,
-    is_done: bool,
+    status: TaskStatus,
 }
 
 impl Task {
@@ -17,7 +22,7 @@ impl Task {
         Task {
             title: title.to_string(),
             description: description,
-            is_done: false,
+            status: TaskStatus::UNDONE,
         }
     }
 
@@ -37,31 +42,12 @@ impl Task {
         self.description = description.map(|desc| desc.to_string());
     }
 
-    pub fn is_done(&self) -> bool {
-        self.is_done
+    pub fn get_status(&self) -> &TaskStatus {
+        &self.status
     }
 
-    pub fn mark_as_done(&mut self) {
-        self.is_done = true;
-    }
-
-    pub fn mark_as_undone(&mut self) {
-        self.is_done = false;
-    }
-}
-
-impl Display for Task {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match &self.description {
-            Some(desc) => write!(f, "{}: {}", self.get_title(), desc),
-            None => write!(f, "{}", self.get_title()),
-        }
-    }
-}
-
-impl PartialEq for Task {
-    fn eq(&self, other: &Self) -> bool {
-        self.title == other.title
+    pub fn set_status(&mut self, status: TaskStatus) {
+        self.status = status;
     }
 }
 
@@ -75,7 +61,7 @@ mod tests {
 
         assert_eq!("task title", task.title);
         assert_eq!("task description", task.description.unwrap());
-        assert!(!task.is_done);
+        assert_eq!(TaskStatus::UNDONE, task.status);
     }
 
     #[test]
@@ -109,42 +95,18 @@ mod tests {
     }
 
     #[test]
-    fn test_is_done() {
-        let task = Task::new("task title", None);
-
-        assert!(!task.is_done());
-    }
-
-    #[test]
-    fn test_mark_as_done() {
+    fn test_get_status() {
         let mut task = Task::new("task title", None);
+        task.status = TaskStatus::UNDERWAY;
 
-        task.mark_as_done();
-
-        assert!(task.is_done);
+        assert_eq!(&TaskStatus::UNDERWAY, task.get_status());
     }
 
     #[test]
-    fn test_mark_as_undone() {
+    fn test_set_status() {
         let mut task = Task::new("task title", None);
+        task.set_status(TaskStatus::UNDERWAY);
 
-        task.is_done = true;
-        task.mark_as_undone();
-
-        assert!(!task.is_done);
-    }
-
-    #[test]
-    fn test_to_string_with_no_description() {
-        let task = Task::new("Task title", None);
-
-        assert_eq!("Task title", task.to_string());
-    }
-
-    #[test]
-    fn test_to_string_with_description() {
-        let task = Task::new("Task title", Some("task description"));
-
-        assert_eq!("Task title: task description", task.to_string());
+        assert_eq!(TaskStatus::UNDERWAY, task.status);
     }
 }
