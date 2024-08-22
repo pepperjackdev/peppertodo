@@ -1,8 +1,7 @@
 use clap::{command, Arg, ArgAction, Command};
-use todo::{manager::TaskManager, run};
+use todo::run;
 
 fn main() {
-    let mut manager = TaskManager::new();
     let command: Command = command!()
         .subcommand(
         Command::new("add")
@@ -40,4 +39,5 @@ fn main() {
                 )
         );
 
-    run(&mut manager, command);}
+    run(command);
+}
