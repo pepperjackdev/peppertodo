@@ -2,7 +2,6 @@ use std::fmt::Display;
 
 use clap::{builder::PossibleValue, ValueEnum};
 
-
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum TaskStatus {
     UNDONE,

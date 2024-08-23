@@ -1,5 +1,5 @@
 use clap::{builder::EnumValueParser, command, Arg, Command};
-use todo::{manager::TaskManager, run, task::{Task, TaskStatus}};
+use todo::{manager::TaskManager, task::{Task, TaskStatus}};
 
 fn main() {
     let mut manager = TaskManager::new();
@@ -28,8 +28,28 @@ fn main() {
                     Arg::new("filter")
                         .value_parser(EnumValueParser::<TaskStatus>::new())
                 )
+        )
+        .subcommand(
+            Command::new("mark")
+                .about("Marks a task's status")
+                .arg(
+                    Arg::new("title")
+                        .short('t')
+                        .long("title")
+                        .help("The title of task to mark")
+                        .required(true)
+                )
+                .arg(
+                    Arg::new("status")
+                        .value_parser(EnumValueParser::<TaskStatus>::new())
+                        .required(true)
+                )
         );
 
-    manager.add_new_task(Task::from("Finish your homework", Some("you still have math to do")));
-    run(&mut command, &mut manager);
+    let _ = manager.add_new_task(Task::from("title 1", None));
+    let _ = manager.add_new_task(Task::from("title 2", Some("description 1")));
+
+    if let Err(error) = todo::run(&mut command, &mut manager) {
+        eprintln!("{error}");
+    }
 }
