@@ -1,7 +1,8 @@
-use clap::{command, Arg, Command};
-use todo::run;
+use clap::{builder::EnumValueParser, command, Arg, Command};
+use todo::{manager::TaskManager, run, task::{Task, TaskStatus}};
 
 fn main() {
+    let mut manager = TaskManager::new();
     let mut command: Command = command!()
         .subcommand(
         Command::new("add")
@@ -19,7 +20,16 @@ fn main() {
                     .short('d')
                     .long("description"),
             ),
+        )
+        .subcommand(
+            Command::new("list")
+                .about("Displays all the tasks")
+                .arg(
+                    Arg::new("filter")
+                        .value_parser(EnumValueParser::<TaskStatus>::new())
+                )
         );
 
-    run(&mut command);
+    manager.add_new_task(Task::from("Finish your homework", Some("you still have math to do")));
+    run(&mut command, &mut manager);
 }
