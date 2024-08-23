@@ -17,7 +17,6 @@ impl TaskManager {
         }
 
         self.tasks.push(task);
-
         Ok(())
     }
 
@@ -63,7 +62,7 @@ mod tests {
         let _ = manager.add_new_task(task_a);
         let result = manager.add_new_task(task_b);
 
-            assert_eq!(Err(Box::new("title already used in another task")), result);
+            assert_eq!(Err(Box::new("Title already used in another task")), result);
     }
 
     #[test]

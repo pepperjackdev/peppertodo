@@ -46,9 +46,6 @@ fn main() {
                 )
         );
 
-    let _ = manager.add_new_task(Task::from("title 1", None));
-    let _ = manager.add_new_task(Task::from("title 2", Some("description 1")));
-
     if let Err(error) = todo::run(&mut command, &mut manager) {
         eprintln!("{error}");
     }
