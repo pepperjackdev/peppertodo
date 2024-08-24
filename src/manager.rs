@@ -1,21 +1,22 @@
 use crate::task::Task;
 
 pub struct TaskManager {
-    tasks: Vec<Task>
+    tasks: Vec<Task>,
 }
 
 impl TaskManager {
     pub fn new() -> TaskManager {
-        TaskManager {
-            tasks: Vec::new()
-        }
+        TaskManager { tasks: Vec::new() }
     }
 
     pub fn add_new_task(&mut self, task: Task) -> Result<(), Box<&'static str>> {
-        if let Some(_) = self.tasks.iter().find(|t| t.get_title() == task.get_title()) {
+        if let Some(_) = self
+            .tasks
+            .iter()
+            .find(|t| t.get_title() == task.get_title())
+        {
             return Err(Box::new("Title already used in another task"));
         }
-
         self.tasks.push(task);
         Ok(())
     }
@@ -28,7 +29,7 @@ impl TaskManager {
         let task_option = self.tasks.iter().find(|task| task.get_title() == title);
         match task_option {
             Some(task) => Ok(task),
-            None => Err(Box::new("No task found with that title"))
+            None => Err(Box::new("No task found with that title")),
         }
     }
 
@@ -36,7 +37,7 @@ impl TaskManager {
         let task_option = self.tasks.iter_mut().find(|task| task.get_title() == title);
         match task_option {
             Some(task) => Ok(task),
-            None => Err(Box::new("No task found with that title"))
+            None => Err(Box::new("No task found with that title")),
         }
     }
 
@@ -50,7 +51,6 @@ mod tests {
     use crate::task::Task;
 
     use super::TaskManager;
-
 
     #[test]
     fn test_add_new_task() {
@@ -71,7 +71,7 @@ mod tests {
         let _ = manager.add_new_task(task_a);
         let result = manager.add_new_task(task_b);
 
-            assert_eq!(Err(Box::new("Title already used in another task")), result);
+        assert_eq!(Err(Box::new("Title already used in another task")), result);
     }
 
     #[test]
