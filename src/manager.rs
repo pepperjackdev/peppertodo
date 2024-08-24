@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use crate::task::Task;
 
 pub struct TaskManager {
@@ -9,7 +11,7 @@ impl TaskManager {
         todo!()
     }
 
-    pub fn add_new_task(&mut self, task: Task) -> Result<(), Box<&'static str>> {
+    pub fn add_new_task(&mut self, task: Task) -> Result<(), Box<dyn Error>> {
         todo!()
     }
 
@@ -17,11 +19,11 @@ impl TaskManager {
         todo!()
     }
 
-    pub fn get_task(&self, title: &str) -> Result<&Task, Box<&'static str>> {
+    pub fn get_task(&self, title: &str) -> Result<&Task, Box<dyn Error>> {
         todo!()
     }
 
-    pub fn get_task_mut(&mut self, title: &str) -> Result<&mut Task, Box<&'static str>> {
+    pub fn get_task_mut(&mut self, title: &str) -> Result<&mut Task, Box<dyn Error>> {
         todo!()
     }
 

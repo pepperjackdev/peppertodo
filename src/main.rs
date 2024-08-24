@@ -2,8 +2,6 @@ use clap::{builder::EnumValueParser, command, Arg, Command};
 use todo::{manager::TaskManager, task::TaskStatus};
 
 fn main() {
-    // Setting up the database
-
     // Setting up the task manager
     let mut manager = TaskManager::new();
 
