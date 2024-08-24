@@ -37,7 +37,32 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<&
         Some(("mark", sub_matches)) => {
             let title = sub_matches.get_one::<String>("title").expect("Argument marked as required");
             let status = sub_matches.get_one::<TaskStatus>("status").expect("Argument marked as required");
-            manager.mark_task(title, status)
+            let task = manager.get_task_mut(title)?;
+            task.set_status(status);
+            Ok(())
+        }
+        Some(("edit", sub_matches)) => {
+            let target_title = sub_matches.get_one::<String>("target").expect("Argument marked as required");
+
+            let new_title = sub_matches.get_one::<String>("title");
+            let new_description = sub_matches.get_one::<String>("description");
+
+            let task = manager.get_task_mut(&target_title)?;
+
+            if let Some(title) = new_title {
+                task.set_title(title);
+            }
+
+            if let Some(description) = new_description {
+                task.set_description(Some(description));
+            }
+
+            Ok(())
+        }
+        Some(("delete", sub_matches)) => {
+            let title = sub_matches.get_one::<String>("delete").expect("Argument marked as required");
+            manager.delete_task(&title);
+            Ok(())
         }
         _ => {
             let _ = command.print_help();

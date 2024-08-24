@@ -70,8 +70,8 @@ impl Task {
         &self.status
     }
 
-    pub fn set_status(&mut self, status: TaskStatus) {
-        self.status = status;
+    pub fn set_status(&mut self, status: &TaskStatus) {
+        self.status = status.clone();
     }
 }
 
@@ -138,7 +138,7 @@ mod tests {
     #[test]
     fn test_set_status() {
         let mut task = Task::from("task title", None);
-        task.set_status(TaskStatus::UNDERWAY);
+        task.set_status(&TaskStatus::UNDERWAY);
 
         assert_eq!(TaskStatus::UNDERWAY, task.status);
     }

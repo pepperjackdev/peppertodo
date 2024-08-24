@@ -1,4 +1,4 @@
-use crate::task::{Task, TaskStatus};
+use crate::task::Task;
 
 pub struct TaskManager {
     tasks: Vec<Task>
@@ -24,15 +24,24 @@ impl TaskManager {
         &self.tasks
     }
 
-    pub fn mark_task(&mut self, title: &str, status: &TaskStatus) -> Result<(), Box<&'static str>> {
-        let task = self.tasks.iter_mut().find(|t| t.get_title() == title);
-        match task {
-            Some(task_to_mark) => {
-                task_to_mark.set_status(status.clone());
-                Ok(())
-            }
-            None => Err(Box::new("No task with the provided title was found"))
+    pub fn get_task(&self, title: &str) -> Result<&Task, Box<&'static str>> {
+        let task_option = self.tasks.iter().find(|task| task.get_title() == title);
+        match task_option {
+            Some(task) => Ok(task),
+            None => Err(Box::new("No task found with that title"))
         }
+    }
+
+    pub fn get_task_mut(&mut self, title: &str) -> Result<&mut Task, Box<&'static str>> {
+        let task_option = self.tasks.iter_mut().find(|task| task.get_title() == title);
+        match task_option {
+            Some(task) => Ok(task),
+            None => Err(Box::new("No task found with that title"))
+        }
+    }
+
+    pub fn delete_task(&mut self, title: &str) {
+        self.tasks.retain(|task| task.get_title() != title);
     }
 }
 

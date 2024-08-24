@@ -1,5 +1,5 @@
 use clap::{builder::EnumValueParser, command, Arg, Command};
-use todo::{manager::TaskManager, task::{Task, TaskStatus}};
+use todo::{manager::TaskManager, task::TaskStatus};
 
 fn main() {
     let mut manager = TaskManager::new();
@@ -36,13 +36,45 @@ fn main() {
                     Arg::new("title")
                         .short('t')
                         .long("title")
-                        .help("The title of task to mark")
+                        .help("The title of the task to mark")
                         .required(true)
                 )
                 .arg(
                     Arg::new("status")
                         .value_parser(EnumValueParser::<TaskStatus>::new())
                         .required(true)
+                )
+        )
+        .subcommand(
+            Command::new("edit")
+                .about("Modifies a task's title or description")
+                .arg(
+                    Arg::new("target")
+                        .long("target")
+                        .help("The title of the task to edit")
+                        .required(true)
+                )
+                .arg(
+                    Arg::new("title")
+                        .short('t')
+                        .long("title")
+                        .help("The new title of the task")
+                )
+                .arg(
+                    Arg::new("description")
+                        .short('d')
+                        .long("description")
+                        .help("The new description of the task")
+                )
+        )
+        .subcommand(
+            Command::new("delete")
+                .arg(
+                    Arg::new("title")
+                        .short('t')
+                        .long("title")
+                        .help("Deletes the task with the provided title")
+                        .required(true)   
                 )
         );
 
