@@ -1,18 +1,30 @@
 use std::error::Error;
 
+use rusqlite::{params, Connection};
+
 use crate::task::Task;
 
 pub struct TaskManager {
-    
+    connection: Connection,
 }
 
 impl TaskManager {
-    pub fn new() -> TaskManager {
-        todo!()
+    pub fn new() -> Result<TaskManager, Box<dyn Error>> {
+        let connection_result = Connection::open("appdata.db");
+        match connection_result {
+            Ok(connection) => {
+                // initializing the tasks table if not present
+                let _ = connection.execute("CREATE TABLE IF NOT EXISTS tasks ('title' text, 'description' text, )", params![]);
+                Ok(TaskManager {
+                    connection
+                })
+            },
+            Err(e) => Err(Box::new(e))
+        }
     }
 
     pub fn add_new_task(&mut self, task: Task) -> Result<(), Box<dyn Error>> {
-        todo!()
+        self.connection.execute()
     }
 
     pub fn get_all_tasks(&self) -> &Vec<Task> {
@@ -34,6 +46,14 @@ impl TaskManager {
 
 #[cfg(test)]
 mod tests {
+    use super::TaskManager;
+
+
+    #[test]
+    fn test_new_taskmanager() {
+        let manager_result = TaskManager::new();
+        assert!(manager_result.is_ok())
+    }
 
     #[test]
     fn test_add_new_task() {

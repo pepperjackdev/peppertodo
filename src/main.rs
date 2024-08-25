@@ -3,7 +3,10 @@ use todo::{manager::TaskManager, task::TaskStatus};
 
 fn main() {
     // Setting up the task manager
-    let mut manager = TaskManager::new();
+    let mut manager = match TaskManager::new() {
+        Ok(manager) => manager,
+        Err(error) => panic!("Problem while accessing application database: {error}")
+    };
 
     // Setting up the command line options
     let mut command: Command = command!()
