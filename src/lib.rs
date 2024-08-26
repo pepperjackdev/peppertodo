@@ -19,7 +19,8 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
 
             let task_to_add = Task::from(title, description.map(|desc| desc.as_str()));
 
-            manager.add_new_task(task_to_add)
+            let _ = manager.add_new_task(task_to_add);
+            Ok(())
         }
 
         // Viewing tasks
@@ -30,6 +31,7 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
                 Some(status) => {
                     manager
                         .get_all_tasks()
+                        .unwrap()
                         .iter()
                         .filter(|task| task.get_status() == status)
                         .for_each(|task| println!("{task}"));
@@ -37,6 +39,7 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
                 None => {
                     manager
                         .get_all_tasks()
+                        .unwrap()
                         .iter()
                         .for_each(|task| println!("{task}"));
                 }
@@ -55,7 +58,7 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
                 .get_one::<TaskStatus>("status")
                 .expect("Safe unwrap: 'status' is required");
 
-            let task = manager.get_task_mut(title)?;
+            let mut task = manager.get_task(title)?;
 
             task.set_status(status);
             
@@ -71,7 +74,7 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
             let new_title = sub_matches.get_one::<String>("title");
             let new_description = sub_matches.get_one::<String>("description");
 
-            let task = manager.get_task_mut(&target_title)?;
+            let mut task = manager.get_task(&target_title)?;
 
             if let Some(title) = new_title {
                 task.set_title(title);

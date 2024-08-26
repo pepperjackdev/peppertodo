@@ -2,6 +2,7 @@ use std::{error::Error, fmt::Display};
 use std::str::FromStr;
 
 use clap::{builder::PossibleValue, ValueEnum};
+use rusqlite::types::{FromSqlError, ValueRef};
 use rusqlite::{types::FromSql, ToSql};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -17,6 +18,22 @@ impl Display for TaskStatus {
             TaskStatus::UNDONE => write!(f, "undone"),
             TaskStatus::UNDERWAY => write!(f, "underway"),
             TaskStatus::DONE => write!(f, "done"),
+        }
+    }
+}
+
+impl FromStr for TaskStatus {
+    type Err = Box<dyn Error>;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "undone" => Ok(TaskStatus::UNDONE),
+            "underway" => Ok(TaskStatus::UNDERWAY),
+            "done" => Ok(TaskStatus::DONE),
+            _ => Err(Box::new(std::io::Error::new(
+                std::io::ErrorKind::InvalidInput,
+                "Invalid task status",
+            ))),
         }
     }
 }
@@ -38,22 +55,13 @@ impl ToSql for TaskStatus {
 }
 
 impl FromSql for TaskStatus {
-    fn column_result(value: rusqlite::types::ValueRef<'_>) -> rusqlite::types::FromSqlResult<Self> {
-        value.as_str()?
-            .parse()
-            .map_err(|e| rusqlite::types::FromSqlError::Other(Box::new(e)))
-    }
-}
-
-impl FromStr for TaskStatus {
-    type Err = Box<dyn std::error::Error>;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+    fn column_result(value: ValueRef<'_>) -> Result<Self, FromSqlError> {
+        let s: String = FromSql::column_result(value)?;
+        match s.as_str() {
             "undone" => Ok(TaskStatus::UNDONE),
             "underway" => Ok(TaskStatus::UNDERWAY),
             "done" => Ok(TaskStatus::DONE),
-            _ => Err(Box::new(Error::)),
+            _ => Err(FromSqlError::InvalidType),
         }
     }
 }
