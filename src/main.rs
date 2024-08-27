@@ -5,7 +5,7 @@ fn main() {
     // Setting up the task manager
     let mut manager = match TaskManager::new() {
         Ok(manager) => manager,
-        Err(error) => panic!("Problem while accessing application database: {error}")
+        Err(error) => panic!("Problem while accessing application database: {error}"),
     };
 
     // Setting up the command line options

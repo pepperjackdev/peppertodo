@@ -1,9 +1,7 @@
-use std::{error::Error, fmt::Display};
 use std::str::FromStr;
+use std::{error::Error, fmt::Display};
 
 use clap::{builder::PossibleValue, ValueEnum};
-use rusqlite::types::{FromSqlError, ValueRef};
-use rusqlite::{types::FromSql, ToSql};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum TaskStatus {
@@ -45,24 +43,6 @@ impl ValueEnum for TaskStatus {
 
     fn to_possible_value(&self) -> Option<clap::builder::PossibleValue> {
         Some(PossibleValue::new(&self.to_string()))
-    }
-}
-
-impl ToSql for TaskStatus {
-    fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
-        Ok(self.to_string().into())
-    }
-}
-
-impl FromSql for TaskStatus {
-    fn column_result(value: ValueRef<'_>) -> Result<Self, FromSqlError> {
-        let s: String = FromSql::column_result(value)?;
-        match s.as_str() {
-            "undone" => Ok(TaskStatus::UNDONE),
-            "underway" => Ok(TaskStatus::UNDERWAY),
-            "done" => Ok(TaskStatus::DONE),
-            _ => Err(FromSqlError::InvalidType),
-        }
     }
 }
 

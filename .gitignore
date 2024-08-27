@@ -1,1 +1,5 @@
+# compiled sources
 /target
+
+# local databases
+*.db

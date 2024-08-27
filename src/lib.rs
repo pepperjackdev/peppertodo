@@ -5,7 +5,10 @@ use task::{Task, TaskStatus};
 pub mod manager;
 pub mod task;
 
-pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<dyn std::error::Error>> {
+pub fn run(
+    command: &mut Command,
+    manager: &mut TaskManager,
+) -> Result<(), Box<dyn std::error::Error>> {
     let matches = command.clone().get_matches();
 
     match matches.subcommand() {
@@ -61,7 +64,7 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
             let mut task = manager.get_task(title)?;
 
             task.set_status(status);
-            
+
             Ok(())
         }
 
