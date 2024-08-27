@@ -3,53 +3,47 @@ use todo::{manager::TaskManager, task::TaskStatus};
 
 fn main() {
     // Setting up the task manager
-    let mut manager = match TaskManager::new() {
-        Ok(manager) => manager,
-        Err(error) => panic!("Problem while accessing application database: {error}"),
-    };
+    let mut manager = TaskManager::new();
 
     // Setting up the command line options
     let mut command: Command = command!()
         .subcommand(
-        Command::new("add")
-            .about("Adds a new task")
-            .arg(
-                Arg::new("title")
-                    .short('t')
-                    .long("title")
-                    .help("The title of the task")
-                    .required(true),
-            )
-            .arg(
-                Arg::new("description")
-                    .help("The description of the task (optional)")
-                    .short('d')
-                    .long("description"),
-            ),
+            Command::new("add")
+                .about("Adds a new task")
+                .arg(
+                    Arg::new("title")
+                        .short('t')
+                        .long("title")
+                        .help("The title of the task")
+                        .required(true),
+                )
+                .arg(
+                    Arg::new("description")
+                        .help("The description of the task (optional)")
+                        .short('d')
+                        .long("description"),
+                ),
         )
         .subcommand(
             Command::new("list")
                 .about("Displays all the tasks")
-                .arg(
-                    Arg::new("filter")
-                        .value_parser(EnumValueParser::<TaskStatus>::new())
-                )
+                .arg(Arg::new("filter").value_parser(EnumValueParser::<TaskStatus>::new())),
         )
         .subcommand(
             Command::new("mark")
                 .about("Marks a task's status")
                 .arg(
-                    Arg::new("title")
+                    Arg::new("target")
                         .short('t')
                         .long("title")
                         .help("The title of the task to mark")
-                        .required(true)
+                        .required(true),
                 )
                 .arg(
                     Arg::new("status")
                         .value_parser(EnumValueParser::<TaskStatus>::new())
-                        .required(true)
-                )
+                        .required(true),
+                ),
         )
         .subcommand(
             Command::new("edit")
@@ -58,30 +52,29 @@ fn main() {
                     Arg::new("target")
                         .long("target")
                         .help("The title of the task to edit")
-                        .required(true)
+                        .required(true),
                 )
                 .arg(
                     Arg::new("title")
                         .short('t')
                         .long("title")
-                        .help("The new title of the task")
+                        .help("The new title of the task"),
                 )
                 .arg(
                     Arg::new("description")
                         .short('d')
                         .long("description")
-                        .help("The new description of the task")
-                )
+                        .help("The new description of the task"),
+                ),
         )
         .subcommand(
-            Command::new("delete")
-                .arg(
-                    Arg::new("title")
-                        .short('t')
-                        .long("title")
-                        .help("Deletes the task with the provided title")
-                        .required(true)   
-                )
+            Command::new("delete").arg(
+                Arg::new("target")
+                    .short('t')
+                    .long("title")
+                    .help("Deletes the task with the provided title")
+                    .required(true),
+            ),
         );
 
     if let Err(error) = todo::run(&mut command, &mut manager) {

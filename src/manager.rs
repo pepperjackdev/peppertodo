@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::{error::Error, io::ErrorKind};
 
 use crate::task::Task;
 
@@ -11,80 +11,109 @@ impl TaskManager {
         TaskManager { tasks: Vec::new() }
     }
 
-    pub fn add_new_task(&mut self, task: Task) -> Result<(), Box<&'static str>> {
-        if let Some(_) = self
-            .tasks
-            .iter()
-            .find(|t| t.get_title() == task.get_title())
-        {
-            return Err(Box::new("Title already used in another task"));
+    pub fn add_new_task(&mut self, task: Task) -> Result<(), Box<dyn Error>> {
+        let already_existing_task = self.get_task(task.get_title());
+        if already_existing_task.is_some() {
+            Err(Box::new(std::io::Error::new(
+                ErrorKind::AlreadyExists,
+                "Task already exists",
+            )))
+        } else {
+            self.tasks.push(task);
+            Ok(())
         }
-        self.tasks.push(task);
-        Ok(())
     }
 
     pub fn get_all_tasks(&self) -> &Vec<Task> {
         &self.tasks
     }
 
-    pub fn get_task(&self, title: &str) -> Result<&Task, Box<&'static str>> {
-        let task_option = self.tasks.iter().find(|task| task.get_title() == title);
-        match task_option {
-            Some(task) => Ok(task),
-            None => Err(Box::new("No task found with that title")),
-        }
+    pub fn get_task(&self, title: &str) -> Option<&Task> {
+        self.tasks.iter().find(|t| t.get_title() == title)
     }
 
-    pub fn get_task_mut(&mut self, title: &str) -> Result<&mut Task, Box<&'static str>> {
-        let task_option = self.tasks.iter_mut().find(|task| task.get_title() == title);
-        match task_option {
-            Some(task) => Ok(task),
-            None => Err(Box::new("No task found with that title")),
-        }
+    pub fn get_task_mut(&mut self, title: &str) -> Option<&mut Task> {
+        self.tasks.iter_mut().find(|t| t.get_title() == title)
     }
 
-    pub fn delete_task(&mut self, title: &str) {
-        todo!()
+    pub fn delete_task(&mut self, title: &str) -> Result<(), Box<dyn Error>> {
+        let to_remove = self.get_task(title);
+        match to_remove {
+            Some(_) => Ok(self.tasks.retain(|t| t.get_title() != title)),
+            None => Err(Box::new(std::io::Error::new(
+                ErrorKind::NotFound,
+                "Task not found",
+            ))),
+        }
     }
 }
-
 #[cfg(test)]
 mod tests {
-
-    #[test]
-    fn test_new_taskmanager() {
-
-    use super::TaskManager;
+    use super::*;
 
     #[test]
     fn test_add_new_task() {
-        
+        let mut manager = TaskManager::new();
+        let task = Task::from("task title", None);
+
+        let _ = manager.add_new_task(task);
+
+        assert!(!manager.tasks.is_empty());
     }
 
     #[test]
-    fn test_add_two_tasks_with_same_title() {
+    fn test_add_new_task_with_taken_title() {
         let mut manager = TaskManager::new();
-        let task_a = Task::from("task title", None);
-        let task_b = Task::from("task title", None);
+        let first_task = Task::from("task title", None);
+        let second_task = Task::from("task title", Some("maybe a description"));
 
-        let _ = manager.add_new_task(task_a);
-        let result = manager.add_new_task(task_b);
+        let _ = manager.add_new_task(first_task);
+        let result = manager.add_new_task(second_task);
 
-        assert_eq!(Err(Box::new("Title already used in another task")), result);
+        assert!(result.is_err());
     }
 
     #[test]
     fn test_get_all_tasks() {
+        let mut manager = TaskManager::new();
+        let task = Task::from("task title", None);
+        let _ = manager.add_new_task(task);
 
+        let tasks = manager.get_all_tasks();
+
+        assert_eq!(&manager.tasks, tasks);
     }
 
     #[test]
-    fn test_get_task_by_title() {
+    fn test_get_task() {
+        let mut manager = TaskManager::new();
+        let task = Task::from("task title", None);
+        let _ = manager.add_new_task(task);
 
+        let task: Option<&Task> = manager.get_task("task title");
+
+        assert!(task.is_some());
+    }
+
+    #[test]
+    fn test_get_task_mut() {
+        let mut manager = TaskManager::new();
+        let task = Task::from("task title", None);
+        let _ = manager.add_new_task(task);
+
+        let task: Option<&mut Task> = manager.get_task_mut("task title");
+
+        assert!(task.is_some());
     }
 
     #[test]
     fn test_delete_task() {
+        let mut manager = TaskManager::new();
+        let task = Task::from("task title", None);
+        let _ = manager.add_new_task(task);
 
+        let result = manager.delete_task("task title");
+
+        assert!(result.is_ok());
     }
 }

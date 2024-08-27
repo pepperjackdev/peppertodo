@@ -1,19 +1,19 @@
+use std::{error::Error, io::ErrorKind};
+
 use clap::Command;
 use manager::TaskManager;
 use task::{Task, TaskStatus};
 
-pub mod task;
 pub mod manager;
+pub mod task;
 
-pub fn run(
-    command: &mut Command,
-    manager: &mut TaskManager,
-) -> Result<(), Box<dyn std::error::Error>> {
+pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<dyn Error>> {
     let matches = command.clone().get_matches();
 
     match matches.subcommand() {
         Some(("add", sub_matches)) => {
-            let title = sub_matches.get_one::<String>("title")
+            let title = sub_matches
+                .get_one::<String>("title")
                 .expect("Safe unwrap: 'title' is required");
 
             let description = sub_matches.get_one::<String>("description");
@@ -22,8 +22,6 @@ pub fn run(
 
             manager.add_new_task(task_to_add)
         }
-
-        // Viewing tasks
         Some(("list", sub_matches)) => {
             let filter = sub_matches.get_one::<TaskStatus>("filter");
 
@@ -54,34 +52,52 @@ pub fn run(
                 .get_one::<TaskStatus>("status")
                 .expect("Safe unwrap: 'status' is required");
 
-            let task = manager.get_task_mut(title)?;
+            let task = manager.get_task_mut(title);
 
-            task.set_status(status);
-            
+            if let Some(task) = task {
+                task.set_status(status);
+            } else {
+                return Err(Box::new(std::io::Error::new(
+                    ErrorKind::NotFound,
+                    "Task to mark not found",
+                )));
+            }
+
             Ok(())
         }
         Some(("edit", sub_matches)) => {
-            let target_title = sub_matches.get_one::<String>("target").expect("Argument marked as required");
+            let target_title = sub_matches
+                .get_one::<String>("target")
+                .expect("Safe unwrap: 'target' is required");
 
             let new_title = sub_matches.get_one::<String>("title");
             let new_description = sub_matches.get_one::<String>("description");
 
-            let mut task = manager.get_task(&target_title)?;
+            let task = manager.get_task_mut(&target_title);
 
-            if let Some(title) = new_title {
-                task.set_title(title);
+            match task {
+                Some(task_to_edit) => {
+                    if let Some(title) = new_title {
+                        task_to_edit.set_title(title);
+                    }
+
+                    if let Some(description) = new_description {
+                        task_to_edit.set_description(Some(&description));
+                    }
+
+                    Ok(())
+                }
+                None => Err(Box::new(std::io::Error::new(
+                    ErrorKind::NotFound,
+                    "Task to edit not found",
+                ))),
             }
-
-            if let Some(description) = new_description {
-                task.set_description(Some(description));
-            }
-
-            Ok(())
         }
         Some(("delete", sub_matches)) => {
-            let title = sub_matches.get_one::<String>("delete").expect("Argument marked as required");
-            manager.delete_task(&title);
-            Ok(())
+            let title = sub_matches
+                .get_one::<String>("target")
+                .expect("Safe unwrap: 'title' is required");
+            manager.delete_task(&title)
         }
         _ => {
             let _ = command.print_help();
