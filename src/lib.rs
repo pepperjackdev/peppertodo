@@ -1,11 +1,12 @@
 use std::{error::Error, io::ErrorKind};
 
 use clap::Command;
-use manager::TaskManager;
-use task::{Task, TaskStatus};
+use manager::{
+    task::TaskStatus,
+    TaskManager,
+};
 
 pub mod manager;
-pub mod task;
 
 pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<dyn Error>> {
     let matches = command.clone().get_matches();
@@ -16,11 +17,11 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
                 .get_one::<String>("title")
                 .expect("Safe unwrap: 'title' is required");
 
-            let description = sub_matches.get_one::<String>("description");
+            let description = sub_matches
+                .get_one::<String>("description")
+                .expect("Safe unwrap: 'description' is required");
 
-            let task_to_add = Task::from(title, description.map(|desc| desc.as_str()));
-
-            manager.add_new_task(task_to_add)
+            manager.add_new_task(title, description)
         }
         Some(("list", sub_matches)) => {
             let filter = sub_matches.get_one::<TaskStatus>("filter");
@@ -28,14 +29,14 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
             match filter {
                 Some(status) => {
                     manager
-                        .get_all_tasks()
+                        .get_all_tasks()?
                         .iter()
-                        .filter(|task| task.get_status() == status)
+                        .filter(|task| task.get_status().unwrap() == *status)
                         .for_each(|task| println!("{task}"));
                 }
                 None => {
                     manager
-                        .get_all_tasks()
+                        .get_all_tasks()?
                         .iter()
                         .for_each(|task| println!("{task}"));
                 }
@@ -52,10 +53,10 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
                 .get_one::<TaskStatus>("status")
                 .expect("Safe unwrap: 'status' is required");
 
-            let task = manager.get_task_mut(title);
+            let task = manager.get_task(title);
 
-            if let Some(task) = task {
-                task.set_status(status);
+            if let Ok(mut task) = task {
+                let _ = task.set_status(status);
             } else {
                 return Err(Box::new(std::io::Error::new(
                     ErrorKind::NotFound,
@@ -73,21 +74,21 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
             let new_title = sub_matches.get_one::<String>("title");
             let new_description = sub_matches.get_one::<String>("description");
 
-            let task = manager.get_task_mut(&target_title);
+            let task = manager.get_task(target_title);
 
             match task {
-                Some(task_to_edit) => {
+                Ok(mut task_to_edit) => {
                     if let Some(title) = new_title {
-                        task_to_edit.set_title(title);
+                        let _ = task_to_edit.set_title(title);
                     }
 
                     if let Some(description) = new_description {
-                        task_to_edit.set_description(Some(&description));
+                        let _ = task_to_edit.set_description(&description);
                     }
 
                     Ok(())
                 }
-                None => Err(Box::new(std::io::Error::new(
+                Err(_) => Err(Box::new(std::io::Error::new(
                     ErrorKind::NotFound,
                     "Task to edit not found",
                 ))),
@@ -97,7 +98,7 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
             let title = sub_matches
                 .get_one::<String>("target")
                 .expect("Safe unwrap: 'title' is required");
-            manager.delete_task(&title)
+            manager.delete_task(title)
         }
         _ => {
             let _ = command.print_help();

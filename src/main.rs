@@ -1,9 +1,9 @@
 use clap::{builder::EnumValueParser, command, Arg, Command};
-use todo::{manager::TaskManager, task::TaskStatus};
+use todo::manager::{task::TaskStatus, TaskManager};
 
 fn main() {
     // Setting up the task manager
-    let mut manager = TaskManager::new();
+    let mut manager = TaskManager::new(r#"appdata.db"#).expect("Problem accessing the database");
 
     // Setting up the command line options
     let mut command: Command = command!()
@@ -21,7 +21,8 @@ fn main() {
                     Arg::new("description")
                         .help("The description of the task (optional)")
                         .short('d')
-                        .long("description"),
+                        .long("description")
+                        .required(true),
                 ),
         )
         .subcommand(
