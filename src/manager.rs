@@ -26,7 +26,7 @@ impl TaskManager {
     ) -> Result<(), Box<dyn Error>> {
         let result = self.connection.execute(
             r#"INSERT INTO "tasks" ("title", "description", "status") VALUES (?1, ?2, ?3)"#,
-            params![title, description, TaskStatus::UNDONE],
+            params![title, description, TaskStatus::Undone],
         );
 
         Ok(result.map(|_| ())?)

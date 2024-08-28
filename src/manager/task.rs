@@ -7,17 +7,17 @@ use rusqlite::{params, Connection, ToSql};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum TaskStatus {
-    UNDONE,
-    UNDERWAY,
-    DONE,
+    Undone,
+    Underway,
+    Done,
 }
 
 impl Display for TaskStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &self {
-            TaskStatus::UNDONE => write!(f, "undone"),
-            TaskStatus::UNDERWAY => write!(f, "underway"),
-            TaskStatus::DONE => write!(f, "done"),
+            TaskStatus::Undone => write!(f, "undone"),
+            TaskStatus::Underway => write!(f, "underway"),
+            TaskStatus::Done => write!(f, "done"),
         }
     }
 }
@@ -27,9 +27,9 @@ impl FromStr for TaskStatus {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "undone" => Ok(TaskStatus::UNDONE),
-            "underway" => Ok(TaskStatus::UNDERWAY),
-            "done" => Ok(TaskStatus::DONE),
+            "undone" => Ok(TaskStatus::Undone),
+            "underway" => Ok(TaskStatus::Underway),
+            "done" => Ok(TaskStatus::Done),
             _ => Err(Box::new(std::io::Error::new(
                 std::io::ErrorKind::InvalidInput,
                 "Invalid task status",
@@ -40,7 +40,7 @@ impl FromStr for TaskStatus {
 
 impl ValueEnum for TaskStatus {
     fn value_variants<'a>() -> &'a [Self] {
-        &[TaskStatus::UNDONE, TaskStatus::UNDERWAY, TaskStatus::DONE]
+        &[TaskStatus::Undone, TaskStatus::Underway, TaskStatus::Done]
     }
 
     fn to_possible_value(&self) -> Option<clap::builder::PossibleValue> {
@@ -52,9 +52,9 @@ impl FromSql for TaskStatus {
     fn column_result(value: ValueRef<'_>) -> Result<Self, FromSqlError> {
         let s: String = FromSql::column_result(value)?;
         match s.as_str() {
-            "undone" => Ok(TaskStatus::UNDONE),
-            "underway" => Ok(TaskStatus::UNDERWAY),
-            "done" => Ok(TaskStatus::DONE),
+            "undone" => Ok(TaskStatus::Undone),
+            "underway" => Ok(TaskStatus::Underway),
+            "done" => Ok(TaskStatus::Done),
             _ => Err(FromSqlError::InvalidType),
         }
     }
