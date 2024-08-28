@@ -91,7 +91,7 @@ impl<'a> Task<'a> {
     pub fn set_title(&mut self, title: &str) -> Result<(), Box<dyn Error>> {
         let mut stmt = self
             .connection
-            .prepare("UPDATE 'tasks' SET 'title' = ?1 WHERE 'id' = ?2")?;
+            .prepare(r#"UPDATE 'tasks' SET 'title' = ?1 WHERE 'id' = ?2"#)?;
         let _ = stmt.execute(params![title, self.id]);
         Ok(())
     }

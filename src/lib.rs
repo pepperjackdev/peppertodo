@@ -28,9 +28,10 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
 
             match filter {
                 Some(status) => {
+                    // TODO: filtering operations should be carried out by SQL
                     manager
                         .get_all_tasks()?
-                        .iter()
+                        .into_iter()
                         .filter(|task| task.get_status().unwrap() == *status)
                         .for_each(|task| println!("{task}"));
                 }
