@@ -1,5 +1,5 @@
 [package]
-name = "todo"
+name = "peppertodo"
 version = "0.1.0"
 description = "A todo list CLI application"
 edition = "2021"

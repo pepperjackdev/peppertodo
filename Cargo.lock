@@ -222,6 +222,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d"
 
 [[package]]
+name = "peppertodo"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "dirs",
+ "rusqlite",
+]
+
+[[package]]
 name = "pkg-config"
 version = "0.3.30"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -311,15 +320,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "todo"
-version = "0.1.0"
-dependencies = [
- "clap",
- "dirs",
- "rusqlite",
 ]
 
 [[package]]

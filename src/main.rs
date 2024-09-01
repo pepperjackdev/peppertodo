@@ -1,5 +1,5 @@
 use clap::{builder::EnumValueParser, command, Arg, Command};
-use todo::manager::{task::TaskStatus, TaskManager};
+use peppertodo::manager::{task::TaskStatus, TaskManager};
 
 fn main() {
     // Setting up the task manager
@@ -74,7 +74,7 @@ fn main() {
                 .arg(Arg::new("target").short('t').long("title").required(true)),
         );
 
-    if let Err(error) = todo::run(&mut command, &mut manager) {
+    if let Err(error) = peppertodo::run(&mut command, &mut manager) {
         eprintln!("{error}");
     }
 }
