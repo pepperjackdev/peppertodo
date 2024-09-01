@@ -71,12 +71,7 @@ fn main() {
         .subcommand(
             Command::new("delete")
                 .about("Deletes the task with the provided title")
-                .arg(
-                    Arg::new("target")
-                        .short('t')
-                        .long("title")
-                        .required(true),
-                ),
+                .arg(Arg::new("target").short('t').long("title").required(true)),
         );
 
     if let Err(error) = todo::run(&mut command, &mut manager) {

@@ -1,10 +1,10 @@
-use std::{env, error::Error, path::Path};
+use std::error::Error;
 
 pub mod task;
 
 use rusqlite::{params, Connection};
-use task::{Task, TaskStatus};
 use std::fs;
+use task::{Task, TaskStatus};
 
 pub struct TaskManager {
     connection: Connection,
@@ -16,12 +16,13 @@ impl TaskManager {
         let app_home = dirs::data_dir().expect("Unsopported");
         let database_home = app_home.join("todo");
 
-        if !database_home.exists() { // if the application's home dir does not exist, it is created
+        if !database_home.exists() {
+            // if the application's home dir does not exist, it is created
             fs::create_dir_all(&database_home)?;
         }
 
-        let connection_path = app_home.join(database_home.join("data.db"));
-        let connection: Connection = Connection::open(&connection_path)?;
+        let connection_path = app_home.join(database_home.join(path));
+        let connection: Connection = Connection::open(connection_path)?;
 
         // initializing task table if not present
         let _ = connection.execute("CREATE TABLE IF NOT EXISTS tasks ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'title' text, 'description' text, 'status' text)", ());
@@ -29,11 +30,7 @@ impl TaskManager {
         Ok(TaskManager { connection })
     }
 
-    pub fn add_new_task(
-        &mut self,
-        title: &str,
-        description: &str,
-    ) -> Result<(), Box<dyn Error>> {
+    pub fn add_new_task(&mut self, title: &str, description: &str) -> Result<(), Box<dyn Error>> {
         let result = self.connection.execute(
             r#"INSERT INTO "tasks" ("title", "description", "status") VALUES (?1, ?2, ?3)"#,
             params![title, description, TaskStatus::Undone],
@@ -51,9 +48,7 @@ impl TaskManager {
         loop {
             let row = rows.next()?;
             match row {
-                Some(task) => {
-                    tasks.push(Task::from(&self.connection, task.get("id")?))
-                },
+                Some(task) => tasks.push(Task::from(&self.connection, task.get("id")?)),
                 None => break,
             }
         }

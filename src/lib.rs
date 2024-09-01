@@ -1,10 +1,7 @@
 use std::{error::Error, io::ErrorKind};
 
 use clap::Command;
-use manager::{
-    task::TaskStatus,
-    TaskManager,
-};
+use manager::{task::TaskStatus, TaskManager};
 
 pub mod manager;
 
@@ -84,7 +81,7 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
                     }
 
                     if let Some(description) = new_description {
-                        let _ = task_to_edit.set_description(&description);
+                        let _ = task_to_edit.set_description(description);
                     }
 
                     Ok(())

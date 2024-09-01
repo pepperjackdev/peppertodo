@@ -78,7 +78,9 @@ impl<'a> Task<'a> {
     }
 
     pub fn get_title(&self) -> Result<String, Box<dyn Error>> {
-        let mut stmt = self.connection.prepare(r#"SELECT "title" FROM "tasks" WHERE "id"=?1"#)?;
+        let mut stmt = self
+            .connection
+            .prepare(r#"SELECT "title" FROM "tasks" WHERE "id"=?1"#)?;
         let mut result = stmt.query(params![&self.id])?;
         if let Some(row) = result.next()? {
             let title: String = row.get("title")?;
@@ -97,7 +99,9 @@ impl<'a> Task<'a> {
     }
 
     pub fn get_description(&self) -> Result<String, Box<dyn Error>> {
-        let mut stmt = self.connection.prepare(r#"SELECT "description" FROM "tasks" WHERE "id"=?1"#)?;
+        let mut stmt = self
+            .connection
+            .prepare(r#"SELECT "description" FROM "tasks" WHERE "id"=?1"#)?;
         let mut result = stmt.query(params![&self.id])?;
         if let Some(row) = result.next()? {
             let title: String = row.get("description")?;
@@ -116,7 +120,9 @@ impl<'a> Task<'a> {
     }
 
     pub fn get_status(&self) -> Result<TaskStatus, Box<dyn Error>> {
-        let mut stmt = self.connection.prepare(r#"SELECT "status" FROM "tasks" WHERE "id"=?1"#)?;
+        let mut stmt = self
+            .connection
+            .prepare(r#"SELECT "status" FROM "tasks" WHERE "id"=?1"#)?;
         let mut result = stmt.query(params![self.id])?;
         if let Some(row) = result.next()? {
             let status: TaskStatus = row.get("status")?;
