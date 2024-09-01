@@ -1,9 +1,10 @@
-use std::error::Error;
+use std::{env, error::Error, path::Path};
 
 pub mod task;
 
 use rusqlite::{params, Connection};
 use task::{Task, TaskStatus};
+use std::fs;
 
 pub struct TaskManager {
     connection: Connection,
@@ -11,7 +12,16 @@ pub struct TaskManager {
 
 impl TaskManager {
     pub fn new(path: &str) -> Result<TaskManager, Box<dyn Error>> {
-        let connection = Connection::open(path)?;
+        // checking for the application's folder availability
+        let app_home = dirs::data_dir().expect("Unsopported");
+        let database_home = app_home.join("todo");
+
+        if !database_home.exists() { // if the application's home dir does not exist, it is created
+            fs::create_dir_all(&database_home)?;
+        }
+
+        let connection_path = app_home.join(database_home.join("data.db"));
+        let connection: Connection = Connection::open(&connection_path)?;
 
         // initializing task table if not present
         let _ = connection.execute("CREATE TABLE IF NOT EXISTS tasks ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'title' text, 'description' text, 'status' text)", ());

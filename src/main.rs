@@ -3,7 +3,7 @@ use todo::manager::{task::TaskStatus, TaskManager};
 
 fn main() {
     // Setting up the task manager
-    let mut manager = TaskManager::new(r#"appdata.db"#).expect("Problem accessing the database");
+    let mut manager = TaskManager::new("appdata.db").expect("Problem accessing the database");
 
     // Setting up the command line options
     let mut command: Command = command!()
