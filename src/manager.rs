@@ -13,7 +13,7 @@ pub struct TaskManager {
 impl TaskManager {
     pub fn new(path: &str) -> Result<TaskManager, Box<dyn Error>> {
         // checking for the application's folder availability
-        let app_home = dirs::data_dir().expect("Unsopported");
+        let app_home = dirs::data_dir().unwrap();
         let database_home = app_home.join("todo");
 
         if !database_home.exists() {
