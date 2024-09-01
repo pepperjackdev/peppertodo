@@ -6,7 +6,7 @@ edition = "2021"
 documentation = "https://github.com/pepperjackdev/todo/blob/master/README.md"
 repository = "https://github.com/pepperjackdev/todo"
 homepage = "https://github.com/pepperjackdev/todo"
-license = "GNU GPLv3"
+license = "GPLv3"
 
 [dependencies]
 clap = { version = "4.5.16", features = ["cargo", "string"] }
