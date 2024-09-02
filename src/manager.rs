@@ -2,7 +2,7 @@ use std::error::Error;
 
 pub mod task;
 
-use rusqlite::{params, Connection};
+use rusqlite::{params, Connection, Statement};
 use std::fs;
 use task::{Task, TaskStatus};
 
@@ -39,9 +39,19 @@ impl TaskManager {
         Ok(result.map(|_| ())?)
     }
 
-    pub fn get_all_tasks(&self) -> Result<Vec<Task>, Box<dyn Error>> {
-        let mut stmt = self.connection.prepare(r#"SELECT * FROM "tasks""#)?;
-        let mut rows = stmt.query([])?;
+    pub fn get_all_tasks(&self, filter: Option<&TaskStatus>) -> Result<Vec<Task>, Box<dyn Error>> {
+        let mut stmt: Statement<'_>;
+
+        let mut rows = match filter {
+            Some(filter) => {
+                stmt = self.connection.prepare(r#"SELECT * FROM "tasks" WHERE "status"=?1"#)?;
+                stmt.query(params![filter])?
+            },
+            None => {
+                stmt = self.connection.prepare(r#"SELECT * FROM "tasks""#)?;
+                stmt.query([])?
+            }
+        };
 
         let mut tasks = Vec::new();
 

@@ -12,3 +12,7 @@ license = "GPL-3.0-only"
 clap = { version = "4.5.16", features = ["cargo", "string"] }
 dirs = "5.0.1"
 rusqlite = { version = "0.32.1", features = ["bundled"]}
+
+[[bin]]
+name = "pt" # setting a short alias for the utily
+path = "src/main.rs"

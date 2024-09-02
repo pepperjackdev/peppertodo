@@ -22,24 +22,9 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
         }
         Some(("list", sub_matches)) => {
             let filter = sub_matches.get_one::<TaskStatus>("filter");
-
-            match filter {
-                Some(status) => {
-                    // TODO: filtering operations should be carried out by SQL
-                    manager
-                        .get_all_tasks()?
-                        .into_iter()
-                        .filter(|task| task.get_status().unwrap() == *status)
-                        .for_each(|task| println!("{task}"));
-                }
-                None => {
-                    manager
-                        .get_all_tasks()?
-                        .iter()
-                        .for_each(|task| println!("{task}"));
-                }
-            }
-
+            manager.get_all_tasks(filter)?
+                .into_iter()
+                .for_each(|task| println!("{task}"));
             Ok(())
         }
         Some(("mark", sub_matches)) => {
