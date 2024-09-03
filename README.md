@@ -2,7 +2,15 @@
 A to-do list command line utlity written in Rust.
 
 ## Table of contents
-- [Used technologies](#build-with)
+- [Build with](#build-with)
+- [Intallation](#installation)
+- [Getting Started](#getting-started)
+    - [A task's structure](#a-tasks-structure)
+    - [Adding a new task](#adding-a-new-task-add-)
+    - [Listing tasks](#listing-tasks-list-ls)
+    - [Marking a task's status](#marking-a-tasks-status-mark-)
+    - [Editing a task's fields](#editing-a-tasks-title-or-description-edit-ed)
+    - [Deleting a task](#deleting-a-task-delete-del)
 
 ## Build with
 - [clap](https://crates.io/crates/clap): a simple, efficient and full-featured command line argument parser.
