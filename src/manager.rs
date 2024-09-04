@@ -13,19 +13,19 @@ pub struct TaskManager {
 impl TaskManager {
     pub fn new(path: &str) -> Result<TaskManager, Box<dyn Error>> {
         // checking for the application's folder availability
-        let app_home = dirs::data_dir().unwrap();
-        let database_home = app_home.join("peppertodo");
+        let data_dir = dirs::data_dir().unwrap();
+        let app_home = data_dir.join("peppertodo");
 
-        if !database_home.exists() {
+        if !app_home.exists() {
             // if the application's home dir does not exist, it is created
-            fs::create_dir_all(&database_home)?;
+            fs::create_dir_all(&app_home)?;
         }
 
-        let connection_path = app_home.join(database_home.join(path));
-        let connection: Connection = Connection::open(connection_path)?;
+        let db_path = data_dir.join(app_home.join(path));
+        let connection: Connection = Connection::open(db_path)?;
 
         // initializing task table if not present
-        let _ = connection.execute("CREATE TABLE IF NOT EXISTS tasks ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'title' text, 'description' text, 'status' text)", ());
+        let _ = connection.execute(r#"CREATE TABLE IF NOT EXISTS tasks ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "title" text, "description" text, "status" text)"#, ());
 
         Ok(TaskManager { connection })
     }
