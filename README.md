@@ -26,7 +26,7 @@ After the installation succeeded, you should be able to run the utility by using
 
     $ pt 
 
-Note that all the tasks are saved into an SQLite database (`appdata.db`) under the `peppertodo` folter, into your `data dir`. For more informations about the what's your data dir depending on you OS, just visit the `dirs` crate docs [here](https://docs.rs/dirs/5.0.1/dirs/fn.data_dir.html).
+Note that all the tasks are saved into an SQLite database (`appdata.db`) under the `peppertodo` folter, into your `data dir`. For more informations about `data dir`, depending on you OS, just visit the `dirs` crate docs [here](https://docs.rs/dirs/5.0.1/dirs/fn.data_dir.html).
 
 Here a short summary:
 
