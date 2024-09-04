@@ -1,6 +1,6 @@
 [package]
 name = "peppertodo"
-version = "0.3.0"
+version = "0.3.1"
 description = "A todo list CLI application"
 edition = "2021"
 documentation = "https://github.com/pepperjackdev/todo/blob/master/README.md"
