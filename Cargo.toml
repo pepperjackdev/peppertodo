@@ -3,9 +3,9 @@ name = "peppertodo"
 version = "0.3.1"
 description = "A todo list CLI application"
 edition = "2021"
-documentation = "https://github.com/pepperjackdev/todo/blob/master/README.md"
-repository = "https://github.com/pepperjackdev/todo"
-homepage = "https://github.com/pepperjackdev/todo"
+documentation = "https://github.com/pepperjackdev/peppertodo/blob/master/README.md"
+repository = "https://github.com/pepperjackdev/peppertodo"
+homepage = "https://github.com/pepperjackdev/peppertodo"
 license = "GPL-3.0-only"
 
 [dependencies]
