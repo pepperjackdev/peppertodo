@@ -1,9 +1,17 @@
+
 use clap::{builder::EnumValueParser, command, Arg, Command};
-use peppertodo::manager::{task::TaskStatus, TaskManager};
+use peppertodo::{manager::{task::TaskStatus, TaskManager}, setup_application_directory};
+use rusqlite::Connection;
 
 fn main() {
+    let app_home = setup_application_directory(env!("CARGO_PKG_NAME"));
+
+    // setting up the application database
+    let connection = Connection::open(app_home.join("appdata.db"))
+        .expect("Unable to access the application database");
+
     // Setting up the task manager
-    let mut manager = TaskManager::new("appdata.db").expect("Problem accessing the database");
+    let mut manager = TaskManager::new(&connection);
 
     // Setting up the command line options
     let mut command: Command = command!()

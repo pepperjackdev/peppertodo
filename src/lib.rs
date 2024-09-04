@@ -1,4 +1,4 @@
-use std::{error::Error, io::ErrorKind};
+use std::{error::Error, fs, io::ErrorKind, path::PathBuf};
 
 use clap::Command;
 use manager::{task::TaskStatus, TaskManager};
@@ -88,4 +88,15 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
             Ok(())
         }
     }
+}
+
+pub fn setup_application_directory(app_home: &str) -> PathBuf {
+    let data_home = dirs::data_dir().expect("Unable to retrive system's data dir");
+    let app_home = data_home.join(app_home);
+
+    if !app_home.exists() {
+        let _ = fs::create_dir_all(&app_home);
+    }
+
+    app_home
 }
