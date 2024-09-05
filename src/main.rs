@@ -1,6 +1,8 @@
-
 use clap::{builder::EnumValueParser, command, Arg, Command};
-use peppertodo::{manager::{task::TaskStatus, TaskManager}, setup_application_directory};
+use peppertodo::{
+    manager::{task::TaskStatus, TaskManager},
+    setup_application_directory,
+};
 use rusqlite::Connection;
 
 fn main() {
@@ -24,14 +26,14 @@ fn main() {
                         .short('t')
                         .long("title")
                         .help("The title of the task")
-                        .required(true)
+                        .required(true),
                 )
                 .arg(
                     Arg::new("description")
                         .help("The description of the task (optional)")
                         .short('d')
                         .long("description")
-                        .required(true)
+                        .required(true),
                 ),
         )
         .subcommand(
@@ -49,12 +51,12 @@ fn main() {
                         .short('t')
                         .long("title")
                         .help("The title of the task to mark")
-                        .required(true)
+                        .required(true),
                 )
                 .arg(
                     Arg::new("status")
                         .value_parser(EnumValueParser::<TaskStatus>::new())
-                        .required(true)
+                        .required(true),
                 ),
         )
         .subcommand(
@@ -65,19 +67,19 @@ fn main() {
                     Arg::new("target")
                         .long("target")
                         .help("The title of the task to edit")
-                        .required(true)
+                        .required(true),
                 )
                 .arg(
                     Arg::new("title")
                         .short('t')
                         .long("title")
-                        .help("The new title of the task")
+                        .help("The new title of the task"),
                 )
                 .arg(
                     Arg::new("description")
                         .short('d')
                         .long("description")
-                        .help("The new description of the task")
+                        .help("The new description of the task"),
                 ),
         )
         .subcommand(
@@ -88,6 +90,6 @@ fn main() {
         );
 
     if let Err(error) = peppertodo::run(&mut command, &mut manager) {
-        eprintln!("{error}");
+        eprintln!("Error: {error}");
     }
 }

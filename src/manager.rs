@@ -11,16 +11,21 @@ pub struct TaskManager<'a> {
 
 impl<'a> TaskManager<'a> {
     pub fn new(connection: &Connection) -> TaskManager {
-
         // initializing, if not present, the working table for TaskManager
-        let _ = connection.execute(r#"CREATE TABLE IF NOT EXISTS tasks ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "title" text, "description" text, "status" text)"#, ());
+        let _ = connection.execute(
+            r#"CREATE TABLE IF NOT EXISTS tasks ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "title" text, "description" text, "status" text)"#, ()
+        );
 
-        TaskManager {
-            connection    
-        }
+        TaskManager { connection }
     }
 
     pub fn add_new_task(&mut self, title: &str, description: &str) -> Result<(), Box<dyn Error>> {
+
+        // checking for title availability
+        if let Ok(_) = self.get_task(title) {
+            return Err(Box::<dyn std::error::Error>::from("A task with the same title already exists"))
+        }
+
         let result = self.connection.execute(
             r#"INSERT INTO "tasks" ("title", "description", "status") VALUES (?1, ?2, ?3)"#,
             params![title, description, TaskStatus::Undone],
@@ -34,9 +39,11 @@ impl<'a> TaskManager<'a> {
 
         let mut rows = match filter {
             Some(filter) => {
-                stmt = self.connection.prepare(r#"SELECT * FROM "tasks" WHERE "status"=?1"#)?;
+                stmt = self
+                    .connection
+                    .prepare(r#"SELECT * FROM "tasks" WHERE "status"=?1"#)?;
                 stmt.query(params![filter])?
-            },
+            }
             None => {
                 stmt = self.connection.prepare(r#"SELECT * FROM "tasks""#)?;
                 stmt.query([])?
@@ -48,7 +55,7 @@ impl<'a> TaskManager<'a> {
         loop {
             let row = rows.next()?;
             match row {
-                Some(task) => tasks.push(Task::from(&self.connection, task.get("id")?)),
+                Some(task) => tasks.push(Task::from(self.connection, task.get("id")?)),
                 None => break,
             }
         }
@@ -63,7 +70,7 @@ impl<'a> TaskManager<'a> {
         let mut result = stmt.query(params![title])?;
         let rows = result.next()?;
         match rows {
-            Some(task) => Ok(Task::from(&self.connection, task.get("id")?)),
+            Some(task) => Ok(Task::from(self.connection, task.get("id")?)),
             None => Err(Box::<dyn std::error::Error>::from("No task found")),
         }
     }

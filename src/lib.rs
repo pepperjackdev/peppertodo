@@ -22,7 +22,8 @@ pub fn run(command: &mut Command, manager: &mut TaskManager) -> Result<(), Box<d
         }
         Some(("list", sub_matches)) => {
             let filter = sub_matches.get_one::<TaskStatus>("filter");
-            manager.get_all_tasks(filter)?
+            manager
+                .get_all_tasks(filter)?
                 .into_iter()
                 .for_each(|task| println!("{task}"));
             Ok(())
