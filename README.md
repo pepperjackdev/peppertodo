@@ -1,6 +1,9 @@
 # peppertodo (pt)
 A to-do list command line utlity written in Rust.
 
+> [!WARNING]
+> The utility is still in development an is really unstable! 
+
 ## Table of contents
 - [Build with](#build-with)
 - [Intallation](#installation)
