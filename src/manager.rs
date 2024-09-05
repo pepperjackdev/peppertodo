@@ -23,7 +23,7 @@ impl<'a> TaskManager<'a> {
 
         // checking for title availability
         if let Ok(_) = self.get_task(title) {
-            return Err(Box::<dyn std::error::Error>::from("A task with the same title already exists"))
+            return Err(Box::<dyn std::error::Error>::from("a task with the same title already exists"))
         }
 
         let result = self.connection.execute(
