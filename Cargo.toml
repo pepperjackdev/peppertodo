@@ -1,6 +1,6 @@
 [package]
 name = "peppertodo"
-version = "0.3.2"
+version = "0.3.3"
 description = "A todo list CLI application"
 edition = "2021"
 documentation = "https://github.com/pepperjackdev/peppertodo/blob/master/README.md"
@@ -14,5 +14,5 @@ dirs = "5.0.1"
 rusqlite = { version = "0.32.1", features = ["bundled"]}
 
 [[bin]]
-name = "pt" # setting a short alias for the utily
+name = "pt"
 path = "src/main.rs"
