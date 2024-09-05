@@ -152,3 +152,78 @@ impl<'a> Display for Task<'a> {
         )
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use rusqlite::{params, Connection};
+
+    use crate::manager::task::TaskStatus;
+
+    use super::Task;
+
+    fn set_up_connection() -> Connection {
+        // initializing a connection to a database that lives on the memory
+        let connection = Connection::open_in_memory()
+            .expect("unable to create in-memory database for testing purpuses");
+
+        // creating the home table of tasks
+        connection.execute(
+            r#"CREATE TABLE IF NOT EXISTS tasks ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "title" text, "description" text, "status" text)"#, []
+        ).expect("unable to set up in-memory database");
+
+        // populating that database with one task
+        connection.execute(r#"INSERT INTO "tasks" ("title", "description", "status") values (?1, ?2, ?3)"#, params!["task title", "task description", "undone"])
+            .expect("unable to add the test task to the database");
+
+        connection
+    }
+
+    fn set_up_task(connection: &Connection) -> Task {
+        Task::from(&connection, 1) // as this is the only task who lives on the db, its id will be `1`
+    }
+
+    #[test]
+    fn test_get_title() {
+        let conn = set_up_connection();
+        let task = set_up_task(&conn);
+        assert_eq!("task title", task.get_title().unwrap());
+    }
+
+    #[test]
+    fn test_set_title() {
+        let conn = set_up_connection();
+        let mut task = set_up_task(&conn);
+        let _ = task.set_title("new task title");
+        assert_eq!("new task title", task.get_title().unwrap())
+    }
+
+    #[test]
+    fn test_get_description() {
+        let conn = set_up_connection();
+        let task = set_up_task(&conn);
+        assert_eq!("task description", task.get_description().unwrap());
+    }
+
+    #[test]
+    fn test_set_description() {
+        let conn = set_up_connection();
+        let mut task = set_up_task(&conn);
+        let _ = task.set_title("new task description");
+        assert_eq!("new task description", task.get_title().unwrap())
+    }
+
+    #[test]
+    fn test_get_status() {
+        let conn = set_up_connection();
+        let task = set_up_task(&conn);
+        assert_eq!(TaskStatus::Undone, task.get_status().unwrap())
+    }
+
+    #[test]
+    fn test_set_status() {
+        let conn = set_up_connection();
+        let mut task = set_up_task(&conn);
+        let _ = task.set_status(&TaskStatus::Underway);
+        assert_eq!(TaskStatus::Underway, task.get_status().unwrap())
+    }
+}
