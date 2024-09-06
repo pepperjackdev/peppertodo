@@ -83,3 +83,63 @@ impl<'a> TaskManager<'a> {
         Ok(result.map(|_| ()).map_err(Box::new)?)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use rusqlite::Connection;
+
+    use super::{task::TaskStatus, TaskManager};
+
+    #[test]
+    fn test_add_new_task() {
+        let conn = Connection::open_in_memory().unwrap();
+        let mut manager = TaskManager::new(&conn);
+        let _ = manager.add_new_task("task title", "task description");
+        assert!(!manager.get_all_tasks(None).unwrap().is_empty());
+    }
+
+    #[test]
+    fn test_add_new_task_with_already_taken_title() {
+        let conn = Connection::open_in_memory().unwrap();
+        let mut manager = TaskManager::new(&conn);
+        let _ = manager.add_new_task("task title", "task description");
+        let result = manager.add_new_task("task title", "another t. description");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_get_all_tasks() {
+        let conn = Connection::open_in_memory().unwrap();
+        let mut manager = TaskManager::new(&conn);
+        let _ = manager.add_new_task("task title", "task description");
+        let result = manager.get_all_tasks(None);
+        assert!(!result.unwrap().is_empty());
+    }
+
+    #[test]
+    fn test_get_all_tasks_filtered() {
+        let conn = Connection::open_in_memory().unwrap();
+        let mut manager = TaskManager::new(&conn);
+        let _ = manager.add_new_task("first task", "task description");
+        let _ = manager.add_new_task("second task", "another task");
+        let _ = manager.get_task("first task").unwrap().set_status(&TaskStatus::Underway);
+        assert_eq!(1, manager.get_all_tasks(Some(&TaskStatus::Undone)).unwrap().len());
+    }
+
+    #[test]
+    fn test_get_task() {
+        let conn = Connection::open_in_memory().unwrap();
+        let mut manager = TaskManager::new(&conn);
+        let _ = manager.add_new_task("task title", "task description");
+        assert!(manager.get_task("task title").is_ok())
+    }
+
+    #[test]
+    fn test_delete_task() {
+        let conn = Connection::open_in_memory().unwrap();
+        let mut manager = TaskManager::new(&conn);
+        let _ = manager.add_new_task("task title", "task description");
+        let _ = manager.delete_task("task title");
+        assert!(manager.get_all_tasks(None).unwrap().is_empty())
+    }
+}
