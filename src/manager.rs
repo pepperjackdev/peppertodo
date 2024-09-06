@@ -13,7 +13,12 @@ impl<'a> TaskManager<'a> {
     pub fn new(connection: &Connection) -> TaskManager {
         // initializing, if not present, the working table for TaskManager
         let _ = connection.execute(
-            r#"CREATE TABLE IF NOT EXISTS tasks ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "title" text, "description" text, "status" text)"#, ()
+            r#"CREATE TABLE IF NOT EXISTS tasks (
+                "id" INTEGER PRIMARY KEY AUTOINCREMENT, 
+                "title" text, 
+                "description" text, 
+                "status" text
+            )"#, ()
         );
 
         TaskManager { connection }
