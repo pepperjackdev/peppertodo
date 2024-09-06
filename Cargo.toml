@@ -9,7 +9,7 @@ homepage = "https://github.com/pepperjackdev/peppertodo"
 license = "GPL-3.0-only"
 
 [dependencies]
-clap = { version = "4.5.16", features = ["cargo", "string"] }
+clap = { version = "4.5.16", features = ["cargo", "derive", "string"] }
 dirs = "5.0.1"
 rusqlite = { version = "0.32.1", features = ["bundled"]}
 
