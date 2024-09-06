@@ -30,9 +30,9 @@ fn main() {
                 )
                 .arg(
                     Arg::new("description")
-                        .help("The description of the task (optional)")
                         .short('d')
                         .long("description")
+                        .help("The description of the task (optional)")
                         .required(true),
                 ),
         )
