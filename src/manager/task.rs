@@ -155,9 +155,9 @@ impl<'a> Display for Task<'a> {
 
 #[cfg(test)]
 mod tests {
-    use rusqlite::{params, Connection};
+    use rusqlite::Connection;
 
-    use crate::manager::task::TaskStatus;
+    use crate::manager::{task::TaskStatus, TaskManager};
 
     use super::Task;
 
@@ -166,14 +166,9 @@ mod tests {
         let connection = Connection::open_in_memory()
             .expect("unable to create in-memory database for testing purpuses");
 
-        // creating the home table of tasks
-        connection.execute(
-            r#"CREATE TABLE IF NOT EXISTS tasks ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "title" text, "description" text, "status" text)"#, []
-        ).expect("unable to set up in-memory database");
-
-        // populating that database with one task
-        connection.execute(r#"INSERT INTO "tasks" ("title", "description", "status") values (?1, ?2, ?3)"#, params!["task title", "task description", "undone"])
-            .expect("unable to add the test task to the database");
+        // setting up a temporary TaskManager to initialized tasks table
+        let mut manager = TaskManager::new(&connection); // the DB has been initialized with "tasks" table
+        let _ = manager.add_new_task("task title", "task description"); // added a test task
 
         connection
     }
