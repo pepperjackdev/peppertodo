@@ -14,6 +14,7 @@ A to-do list command line utlity written in Rust.
     - [Marking a task's status](#marking-a-tasks-status-mark-)
     - [Editing a task's fields](#editing-a-tasks-title-or-description-edit-ed)
     - [Deleting a task](#deleting-a-task-delete-del)
+    - [Clearing done tasks](#clearing-up-deleting-all-the-tasks-marked-as-done-clear-cls)
 
 ## Build with
 - [clap](https://crates.io/crates/clap): a simple, efficient and full-featured command line argument parser.
