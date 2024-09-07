@@ -33,7 +33,7 @@ pub fn run(cli: &Cli, manager: &mut TaskManager) -> Result<(), Box<dyn Error>> {
                 task.set_description(new_description)?;
             };
 
-            // if nothing but has happened...
+            // if nothing bad has happened...
             Ok(())
         },
         Commands::Delete { target } => {
