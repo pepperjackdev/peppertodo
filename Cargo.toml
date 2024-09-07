@@ -1,12 +1,13 @@
 [package]
 name = "peppertodo"
-version = "0.3.3"
+version = "0.4.0"
 description = "A todo list CLI application"
 edition = "2021"
 documentation = "https://github.com/pepperjackdev/peppertodo/blob/master/README.md"
 repository = "https://github.com/pepperjackdev/peppertodo"
 homepage = "https://github.com/pepperjackdev/peppertodo"
 license = "GPL-3.0-only"
+authors = ["Giacomo De Florio (@pepperjackdev)"]
 
 [dependencies]
 clap = { version = "4.5.16", features = ["cargo", "derive", "string"] }

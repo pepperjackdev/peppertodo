@@ -118,3 +118,26 @@ fn test_run_delete() -> Result<(), Box<dyn Error>> {
     // Well, nothing bad has happened
     Ok(())
 }
+
+#[test]
+fn test_run_clear() -> Result<(), Box<dyn Error>> {
+    // setting up the manager
+    let conn = Connection::open_in_memory()?;
+    let mut manager = TaskManager::new(&conn);
+
+    // populating the db 
+    manager.add_new_task("task", "desc")?;
+    manager.get_task("task").unwrap().set_status(&TaskStatus::Done)?;
+
+    // setting up the cli
+    let cli = Cli::from(Cli { 
+        command: Commands::Clear
+    });
+
+    let _ = peppertodo::run(&cli, &mut manager)?;
+
+    assert!(manager.get_all_tasks(None).unwrap().is_empty());
+
+    // Well, nothing bad has happened
+    Ok(())
+}

@@ -87,6 +87,14 @@ impl<'a> TaskManager<'a> {
         let result = stmt.execute(params![title]);
         Ok(result.map(|_| ()).map_err(Box::new)?)
     }
+
+    pub fn clear_done_tasks(&mut self) -> Result<(), Box<dyn Error>> {
+        let mut stmt = self
+            .connection
+            .prepare(r#"DELETE FROM "tasks" WHERE "status" = ?1"#)?;
+        let result = stmt.execute(params![TaskStatus::Done]);
+        Ok(result.map(|_| ()).map_err(Box::new)?)
+    }
 }
 
 #[cfg(test)]
@@ -146,5 +154,20 @@ mod tests {
         let _ = manager.add_new_task("task title", "task description");
         let _ = manager.delete_task("task title");
         assert!(manager.get_all_tasks(None).unwrap().is_empty())
+    }
+
+    #[test]
+    fn test_clear_done_tasks() {
+        let conn = Connection::open_in_memory().unwrap();
+        let mut manager = TaskManager::new(&conn);
+
+        // adding some tasks
+        let _ = manager.add_new_task("task A", "desc A");
+        let _ = manager.add_new_task("task B", "desc B");
+        let _ = manager.get_task("task A").unwrap().set_status(&TaskStatus::Done);
+
+        let _ = manager.clear_done_tasks();
+
+        assert_eq!(1, manager.get_all_tasks(None).unwrap().len());
     }
 }

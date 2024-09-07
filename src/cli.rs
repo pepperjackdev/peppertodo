@@ -69,5 +69,9 @@ pub enum Commands {
         /// The title of the task to delete
         #[arg(required = true)]
         target: String,
-    }
+    },
+
+    /// Deletes all the tasks marked as done
+    #[command(alias = "cls")]
+    Clear
 }

@@ -39,6 +39,9 @@ pub fn run(cli: &Cli, manager: &mut TaskManager) -> Result<(), Box<dyn Error>> {
         Commands::Delete { target } => {
             manager.delete_task(target)
         },
+        Commands::Clear => {
+            manager.clear_done_tasks()
+        }
     }
 }
 

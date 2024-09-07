@@ -115,3 +115,12 @@ To delete a task, use:
 or its short hand version:
 
     $ pt del -t "Task title"
+
+### Clearing up (deleting) all the tasks marked as `done`: `clear` (`cls`)
+To delete all the tasks marked as done with a single command, use:
+
+    $ pt clear
+
+or its short hand version: 
+
+    $ pt cls
