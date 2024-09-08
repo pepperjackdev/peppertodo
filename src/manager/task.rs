@@ -188,7 +188,8 @@ mod tests {
     fn test_set_title() {
         let conn = set_up_connection();
         let mut task = set_up_task(&conn);
-        let _ = task.set_title("new task title");
+        task.set_title("new task title")
+            .expect("Task should exists and database should be accessible");
         assert_eq!("new task title", task.get_title().unwrap())
     }
 
@@ -203,7 +204,8 @@ mod tests {
     fn test_set_description() {
         let conn = set_up_connection();
         let mut task = set_up_task(&conn);
-        let _ = task.set_title("new task description");
+        task.set_title("new task description")
+            .expect("Task should exists and database should be accessible");
         assert_eq!("new task description", task.get_title().unwrap())
     }
 
@@ -218,7 +220,8 @@ mod tests {
     fn test_set_status() {
         let conn = set_up_connection();
         let mut task = set_up_task(&conn);
-        let _ = task.set_status(&TaskStatus::Underway);
+        task.set_status(&TaskStatus::Underway)
+            .expect("Task should exists and database should be accessible");
         assert_eq!(TaskStatus::Underway, task.get_status().unwrap())
     }
 }
