@@ -29,7 +29,7 @@ pub enum Commands {
     /// Lists all tasks
     #[command(alias = "ls")]
     List {
-        /// If specified, only the task with a certain status will be displayed
+        /// If specified, only the tasks with a certain status will be displayed
         filter: Option<TaskStatus>
     },
 
