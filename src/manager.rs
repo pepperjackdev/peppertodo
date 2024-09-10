@@ -46,11 +46,20 @@ impl<'a> TaskManager<'a> {
             Some(filter) => {
                 stmt = self
                     .connection
-                    .prepare(r#"SELECT * FROM "tasks" WHERE "status"=?1"#)?;
+                    .prepare(
+                        r#"SELECT "id" FROM "tasks" WHERE "status"=?1"#)?;
                 stmt.query(params![filter])?
             }
             None => {
-                stmt = self.connection.prepare(r#"SELECT * FROM "tasks""#)?;
+                stmt = self.connection.prepare(
+                    r#"SELECT "id"
+                        FROM "tasks"
+                        ORDER BY "status",
+	                        CASE
+		                        WHEN "status" = "undone" THEN 2
+		                        WHEN "status" = "underway" THEN 1
+		                        WHEN "status" = "done" THEN 3
+	                        END;"#)?;
                 stmt.query([])?
             }
         };
