@@ -2,7 +2,7 @@
 A to-do list command line utlity written in Rust.
 
 > [!WARNING]
-> The utility is still in development an is really unstable! 
+> The utility is still under development
 
 ## Table of contents
 - [Build with](#build-with)
