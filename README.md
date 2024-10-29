@@ -18,7 +18,7 @@ A to-do list command line utlity written in Rust.
 
 ## Build with
 - [clap](https://crates.io/crates/clap): a simple, efficient and full-featured command line argument parser.
-- [dirs](https://crates.io/crates/dirs): library that provides platform-specific standard locations of directories for config, cache and other data on Linux, Windows, macOS and Redox.
+- [dirs-next](https://crates.io/crates/dirs-next): library that provides platform-specific standard locations of directories for config, cache and other data on Linux, Windows, macOS and Redox.
 - [rusqlite](https://crates.io/crates/rusqlite): an ergonomic wrapper for SQLite's DBMS.
 
 ## Installation
