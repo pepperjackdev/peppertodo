@@ -45,7 +45,7 @@ pub fn run(cli: &Cli, manager: &mut TaskManager) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn setup_application_directory(app_home: &str) -> PathBuf {
-    let data_home = dirs::data_dir().expect("Unable to retrive system's data dir");
+    let data_home = dirs_next::data_dir().expect("Unable to retrive system's data dir");
     let app_home = data_home.join(app_home);
 
     if !app_home.exists() {
